@@ -1,16 +1,40 @@
 require('dotenv').config();
 const request = require('postman-request');
 const yargs = require('yargs');
-const ipbasedWeather = require('./ipBasedLocation');
-const mapboxBasedWeather = require('./mapboxLocationWeather');
-const weather_api_key = process.env.WEATHER_API_KEY;
-const mapbox_api_key = process.env.MAPBOX_API_KEY;
+const chalk = require('chalk');
+const weather = require('./utils/weather');
+const geoencode = require('./utils/geoencode');
 
 yargs.command({
   command: 'ip',
   description: 'Ip based wether info',
   handler(argv) {
-    ipbasedWeather(weather_api_key);
+    geoencode('ip', '', (geoError, geoData) => {
+      if (geoError) {
+        return console.log(chalk.red.inverse(geoError.message));
+      }
+      weather(
+        geoData.latitude,
+        geoData.longitude,
+        (weatherError, weatherData) => {
+          if (weatherError) {
+            return console.log(chalk.red.inverse(weatherError.message));
+          }
+          console.log(
+            `Your current location is ${chalk.yellow(geoData.location)}`,
+          );
+          console.log(
+            `its ${chalk.green(
+              weatherData.weather_descriptions,
+            )} in ${chalk.yellow(geoData.location)}. Its ${chalk.green(
+              weatherData.temperature,
+            )} degrees out but it feels like ${chalk.green(
+              weatherData.feelslike,
+            )} degrees.`,
+          );
+        },
+      );
+    });
   },
 });
 
@@ -25,8 +49,32 @@ yargs.command({
     },
   },
   handler(argv) {
-    console.log(argv.q);
-    mapboxBasedWeather(mapbox_api_key, weather_api_key, argv.q);
+    geoencode('mapbox', argv.q, (geoError, geoData) => {
+      if (geoError) {
+        return console.log(chalk.red.inverse(geoError.message));
+      }
+      weather(
+        geoData.latitude,
+        geoData.longitude,
+        (weatherError, weatherData) => {
+          if (weatherError) {
+            return console.log(chalk.red.inverse(weatherError.message));
+          }
+          console.log(
+            `Your current location is ${chalk.yellow(geoData.location)}`,
+          );
+          console.log(
+            `its ${chalk.green(
+              weatherData.weather_descriptions,
+            )} in ${chalk.yellow(geoData.location)}. Its ${chalk.green(
+              weatherData.temperature,
+            )} degrees out but it feels like ${chalk.green(
+              weatherData.feelslike,
+            )} degrees.`,
+          );
+        },
+      );
+    });
   },
 });
 

@@ -17,6 +17,7 @@
     "dotenv": "^10.0.0",
     "geoip-lite": "^1.4.2",
     "postman-request": "^2.88.1-postman.30",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "yargs": "^17.0.1"
   }
 }

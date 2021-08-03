@@ -1,5 +1,5 @@
 const request = require('postman-request');
-
+const chalk = require('chalk');
 const geoip = require('geoip-lite');
 
 const url = (apikey, lat, log) =>
@@ -15,7 +15,10 @@ const getWeatherDataBasedOnIp = (api_key) => {
 
     // ip lookup to get current location
     const currentLocation = geoip.lookup(res.body);
-    console.log(`Your current location is ${currentLocation.city}`);
+    console.log(
+      `Your current location is ${chalk.yellow(currentLocation.city)}`,
+    );
+    console.log(currentLocation.ll[0], currentLocation.ll[1]);
 
     //request to get current location weather data
     request(
@@ -25,12 +28,33 @@ const getWeatherDataBasedOnIp = (api_key) => {
       },
       (er, wres) => {
         if (er) {
-          console.log(er);
+          console.log(
+            chalk.red.inverse(
+              'There was an error connecting with the weather API',
+            ),
+          );
           return;
         }
+
         const jsonData = wres.body;
+
+        if (jsonData.error) {
+          console.log(
+            chalk.red.inverse(
+              'Cannot get the wether for this location. please try again with other location',
+            ),
+          );
+          return;
+        }
+
         console.log(
-          `its ${jsonData.current.weather_descriptions[0]} in ${currentLocation.city}. Its ${jsonData.current.temperature} degrees out but it feels like ${jsonData.current.feelslike} degrees.`,
+          `its ${chalk.green(
+            jsonData.current.weather_descriptions[0],
+          )} in ${chalk.yellow(currentLocation.city)}. Its ${chalk.green(
+            jsonData.current.temperature,
+          )} degrees out but it feels like ${chalk.green(
+            jsonData.current.feelslike,
+          )} degrees.`,
         );
       },
     );

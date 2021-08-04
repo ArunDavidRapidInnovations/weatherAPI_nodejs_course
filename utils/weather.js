@@ -12,15 +12,14 @@ const weather = (latitude, longitude, callback) => {
       url: weather_url(weather_api_key, latitude, longitude),
       json: true,
     },
-    (er, wres) => {
+    (er, { body }) => {
       if (er) {
         return callback(
           { message: 'There was an error connecting with the weather API' },
           undefined,
         );
       }
-      const jsonData = wres.body;
-      if (jsonData.error) {
+      if (body.error) {
         return callback(
           {
             message:
@@ -31,9 +30,9 @@ const weather = (latitude, longitude, callback) => {
       }
 
       callback(undefined, {
-        weather_descriptions: jsonData.current.weather_descriptions[0],
-        temperature: jsonData.current.temperature,
-        feelslike: jsonData.current.feelslike,
+        weather_descriptions: body.current.weather_descriptions[0],
+        temperature: body.current.temperature,
+        feelslike: body.current.feelslike,
       });
     },
   );

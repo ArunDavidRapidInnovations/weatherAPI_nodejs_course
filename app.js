@@ -9,27 +9,28 @@ yargs.command({
   command: 'ip',
   description: 'Ip based wether info',
   handler(argv) {
-    geoencode('ip', '', (geoError, geoData) => {
+    geoencode('ip', '', (geoError, { latitude, longitude, location } = {}) => {
       if (geoError) {
         return console.log(chalk.red.inverse(geoError.message));
       }
       weather(
-        geoData.latitude,
-        geoData.longitude,
-        (weatherError, weatherData) => {
+        latitude,
+        longitude,
+        (
+          weatherError,
+          { weather_descriptions, temperature, feelslike } = {},
+        ) => {
           if (weatherError) {
             return console.log(chalk.red.inverse(weatherError.message));
           }
+          console.log(`Your current location is ${chalk.yellow(location)}`);
           console.log(
-            `Your current location is ${chalk.yellow(geoData.location)}`,
-          );
-          console.log(
-            `its ${chalk.green(
-              weatherData.weather_descriptions,
-            )} in ${chalk.yellow(geoData.location)}. Its ${chalk.green(
-              weatherData.temperature,
+            `its ${chalk.green(weather_descriptions)} in ${chalk.yellow(
+              location,
+            )}. Its ${chalk.green(
+              temperature,
             )} degrees out but it feels like ${chalk.green(
-              weatherData.feelslike,
+              feelslike,
             )} degrees.`,
           );
         },
@@ -49,32 +50,37 @@ yargs.command({
     },
   },
   handler(argv) {
-    geoencode('mapbox', argv.q, (geoError, geoData) => {
-      if (geoError) {
-        return console.log(chalk.red.inverse(geoError.message));
-      }
-      weather(
-        geoData.latitude,
-        geoData.longitude,
-        (weatherError, weatherData) => {
-          if (weatherError) {
-            return console.log(chalk.red.inverse(weatherError.message));
-          }
-          console.log(
-            `Your current location is ${chalk.yellow(geoData.location)}`,
-          );
-          console.log(
-            `its ${chalk.green(
-              weatherData.weather_descriptions,
-            )} in ${chalk.yellow(geoData.location)}. Its ${chalk.green(
-              weatherData.temperature,
-            )} degrees out but it feels like ${chalk.green(
-              weatherData.feelslike,
-            )} degrees.`,
-          );
-        },
-      );
-    });
+    geoencode(
+      'mapbox',
+      argv.q,
+      (geoError, { latitude, longitude, location } = {}) => {
+        if (geoError) {
+          return console.log(chalk.red.inverse(geoError.message));
+        }
+        weather(
+          latitude,
+          longitude,
+          (
+            weatherError,
+            { weather_descriptions, temperature, feelslike } = {},
+          ) => {
+            if (weatherError) {
+              return console.log(chalk.red.inverse(weatherError.message));
+            }
+            console.log(`Your current location is ${chalk.yellow(location)}`);
+            console.log(
+              `its ${chalk.green(weather_descriptions)} in ${chalk.yellow(
+                location,
+              )}. Its ${chalk.green(
+                temperature,
+              )} degrees out but it feels like ${chalk.green(
+                feelslike,
+              )} degrees.`,
+            );
+          },
+        );
+      },
+    );
   },
 });
 

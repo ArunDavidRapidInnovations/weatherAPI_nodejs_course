@@ -9,13 +9,13 @@ const mapbox_url = (apikey, query) =>
 
 const geoencode = (type = 'ip', query = 'Hyderabad', callback) => {
   if (type == 'ip') {
-    request({ url: 'http://ipinfo.io/ip' }, (err, res) => {
+    request({ url: 'http://ipinfo.io/ip' }, (err, { body }) => {
       if (err) {
         return callback({ message: 'cannot Reach the ipinfo API' }, undefined);
       }
 
       // ip lookup to get current location
-      const currentLocation = geoip.lookup(res.body);
+      const currentLocation = geoip.lookup(body);
 
       return callback(undefined, {
         latitude: currentLocation.ll[0],
@@ -26,7 +26,7 @@ const geoencode = (type = 'ip', query = 'Hyderabad', callback) => {
   } else {
     request(
       { url: mapbox_url(mapbox_api_key, query), json: true },
-      (err, res) => {
+      (err, { body }) => {
         if (err) {
           return callback(
             { message: 'cannot Reach the map box API' },
@@ -34,7 +34,7 @@ const geoencode = (type = 'ip', query = 'Hyderabad', callback) => {
           );
         }
 
-        if (res.body.features.length == 0) {
+        if (body.features.length == 0) {
           return callback(
             {
               message:
@@ -43,7 +43,7 @@ const geoencode = (type = 'ip', query = 'Hyderabad', callback) => {
             undefined,
           );
         }
-        const currentLocation = res.body.features[0];
+        const currentLocation = body.features[0];
         callback(undefined, {
           latitude: currentLocation.center[1],
           longitude: currentLocation.center[0],

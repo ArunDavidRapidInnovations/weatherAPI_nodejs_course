@@ -57,7 +57,7 @@ app.get('/api/weather/:type', (req, res) => {
   } else if (req.params.type == 'ip') {
     geoencode(
       'ip',
-      reqIP,
+      req.query.ip,
       (
         geoError,
         { weather_descriptions, temperature, feelslike, imgurl, location } = {},

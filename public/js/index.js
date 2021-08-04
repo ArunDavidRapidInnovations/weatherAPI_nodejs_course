@@ -1,23 +1,29 @@
 document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('location').value = '';
-  fetch('https://ipinfo.io/ip').then((res) => {
-    res.text().then((ipData) => {
-      fetch(`/api/weather/ip?ip=${ipData}`).then((response) => {
-        response.json().then((data) => {
-          console.log(data);
-          setWetherData(data);
-          setTimeout(() => {
-            let loadingContainer = document.getElementById('loadingAnimation');
-            let mainWeatherContainer = document.getElementById(
-              'mainWeatherContainer',
-            );
-            loadingContainer.classList.add('noDisplay');
-            mainWeatherContainer.classList.remove('noDisplay');
-          }, 0);
+  fetch('https://ipinfo.io/ip')
+    .then((res) => {
+      res.text().then((ipData) => {
+        fetch(`/api/weather/ip?ip=${ipData}`).then((response) => {
+          response.json().then((data) => {
+            console.log(data);
+            setWetherData(data);
+            setTimeout(() => {
+              let loadingContainer =
+                document.getElementById('loadingAnimation');
+              let mainWeatherContainer = document.getElementById(
+                'mainWeatherContainer',
+              );
+              loadingContainer.classList.add('noDisplay');
+              mainWeatherContainer.classList.remove('noDisplay');
+            }, 0);
+          });
         });
       });
+    })
+    .catch((err) => {
+      document.getElementById('location').value = 'Hyderabad';
+      searchBasedOnPlace();
     });
-  });
 });
 
 const searchBasedOnPlace = () => {

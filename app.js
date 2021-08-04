@@ -88,6 +88,6 @@ app.get('*', (req, res) => {
   });
 });
 
-app.listen(3000, () => {
+app.listen(80, () => {
   console.log(chalk.green.inverse('Server is Up and Running on port 3000!'));
 });

@@ -1,0 +1,247 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --textColor: #153243;
+  --bgColor: #96b5e5;
+}
+
+body {
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--bgColor);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit; /* no underline */
+}
+
+.noDisplay {
+  display: none !important;
+}
+
+.heading {
+  width: 100%;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--textColor);
+  text-align: center;
+  padding-top: 2rem;
+}
+
+.nav {
+  width: 60%;
+  display: flex;
+  justify-content: space-evenly;
+  padding: 0.5rem;
+  margin: auto;
+  margin-top: 3rem;
+}
+
+.navItem {
+  background-color: var(--textColor);
+  padding: 1rem;
+  color: var(--bgColor);
+  border: 2px solid var(--textColor);
+  width: 10rem;
+  text-align: center;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.navItem:hover {
+  color: var(--textColor);
+  background-color: var(--bgColor);
+  border: 2px solid var(--textColor);
+}
+
+.navSelected {
+  color: var(--textColor);
+  background-color: var(--bgColor);
+  border: 2px solid var(--textColor);
+  cursor: not-allowed;
+}
+
+.navSelected:hover {
+  color: var(--textColor);
+  background-color: var(--bgColor);
+  border: 2px solid var(--textColor);
+}
+
+.errorContainer {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.errorHeading {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--textColor);
+  text-align: center;
+  margin-top: 5rem;
+}
+
+.errorMessage {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--textColor);
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.footer {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  right: 0;
+  /* left: auto; */
+  text-align: center;
+  padding-bottom: 2rem;
+}
+
+.loadingAnimation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 10rem;
+  margin: 0;
+}
+
+/* Loading animation */
+
+.clock-loader {
+  --clock-color: var(--textColor);
+  --clock-width: 4rem;
+  --clock-radius: calc(var(--clock-width) / 2);
+  --clock-minute-length: calc(var(--clock-width) * 0.4);
+  --clock-hour-length: calc(var(--clock-width) * 0.2);
+  --clock-thickness: 0.2rem;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--clock-width);
+  height: var(--clock-width);
+  border: 3px solid var(--clock-color);
+  border-radius: 50%;
+}
+.clock-loader::before,
+.clock-loader::after {
+  position: absolute;
+  content: '';
+  top: calc(var(--clock-radius) * 0.25);
+  width: var(--clock-thickness);
+  background: var(--clock-color);
+  border-radius: 10px;
+  transform-origin: center calc(100% - calc(var(--clock-thickness) / 2));
+  animation: spin infinite linear;
+}
+.clock-loader::before {
+  height: var(--clock-minute-length);
+  animation-duration: 2s;
+}
+.clock-loader::after {
+  top: calc(var(--clock-radius) * 0.25 + var(--clock-hour-length));
+  height: var(--clock-hour-length);
+  animation-duration: 15s;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/*  wether data css */
+
+.mainWeatherContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.loactionInputContainer {
+  background-color: var(--textColor);
+  display: flex;
+  justify-content: space-between;
+  width: 60%;
+  margin: auto;
+}
+
+.locationInput {
+  padding: 0.5rem;
+  background-color: var(--bgColor);
+  border: 2px solid var(--textColor);
+  width: 75%;
+}
+
+.locationInput:focus {
+  outline: none !important;
+}
+
+.searchBtn {
+  background-color: var(--textColor);
+  border: 2px solid var(--textColor);
+  color: var(--bgColor);
+  padding: 0.5rem;
+  margin: 0;
+  width: 25%;
+  cursor: pointer;
+}
+
+.searchBtn:hover {
+  background-color: var(--bgColor);
+  color: var(--textColor);
+}
+
+.weatherDataContainer {
+  margin-top: 3rem;
+  font-size: 1.3rem;
+}
+
+.weatherIcon {
+  margin-top: 0.5rem;
+}
+
+/* About styling */
+
+.aboutContainer {
+  width: 100%;
+  text-align: center;
+}
+
+.aboutHeading {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--bgColor);
+  text-align: center;
+  width: 70%;
+  padding: 0.5rem;
+  background-color: var(--textColor);
+  margin: auto;
+  margin-top: 1.5rem;
+}
+
+.aboutMeImage {
+  border-radius: 50%;
+  width: 10.5rem;
+  margin-top: 1rem;
+  border: 2px solid var(--textColor);
+}
+
+.aboutMeContent {
+  font-size: 1.3rem;
+  color: var(--textColor);
+  font-weight: 600;
+  margin-top: 1rem;
+}

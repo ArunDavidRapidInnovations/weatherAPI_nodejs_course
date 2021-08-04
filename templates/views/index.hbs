@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Application</title>
+    <link rel="icon" href="/img/weather.png" type="image">
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+<body>
+    {{>header}}
+    {{>navbar}}
+    
+    <div id='loadingAnimation' class="loadingAnimation">
+        <div class="clock-loader"></div>
+    </div>
+    <div id='mainWeatherContainer' class="mainWeatherContainer noDisplay">
+        <div class="loactionInputContainer">
+            <input type="text" class="locationInput" id="location">
+            <button class="searchBtn" onClick="searchBasedOnPlace()">Search</button>
+        </div>
+        <div id="wetherDataContainer" class="weatherDataContainer">
+            {{!-- <div class="locationData">Your Location is <b>Hyderabad</b> </div>
+            <img src="imageUrl" alt="wetherIcon" class="weatherIcon">
+            <div class="weatherString">
+                It's <b>Partly Sunny</b> in <b>Hyderabad</b>, <br> It's <b>28</b> degrees outside but it feels like <b>30</b> degrees.  
+            </div> --}}
+        </div>
+    </div>
+    {{>footer}}
+
+    <script src="/js/index.js"></script>
+</body>
+</html>

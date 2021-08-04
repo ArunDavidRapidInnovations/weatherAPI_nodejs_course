@@ -1,87 +1,92 @@
-require('dotenv').config();
-const request = require('postman-request');
-const yargs = require('yargs');
+const express = require('express');
 const chalk = require('chalk');
+const path = require('path');
+const { green } = require('chalk');
+const hbs = require('hbs');
 const weather = require('./utils/weather');
 const geoencode = require('./utils/geoencode');
+const app = express();
 
-yargs.command({
-  command: 'ip',
-  description: 'Ip based wether info',
-  handler(argv) {
-    geoencode('ip', '', (geoError, { latitude, longitude, location } = {}) => {
-      if (geoError) {
-        return console.log(chalk.red.inverse(geoError.message));
-      }
-      weather(
-        latitude,
-        longitude,
-        (
-          weatherError,
-          { weather_descriptions, temperature, feelslike } = {},
-        ) => {
-          if (weatherError) {
-            return console.log(chalk.red.inverse(weatherError.message));
-          }
-          console.log(`Your current location is ${chalk.yellow(location)}`);
-          console.log(
-            `its ${chalk.green(weather_descriptions)} in ${chalk.yellow(
-              location,
-            )}. Its ${chalk.green(
-              temperature,
-            )} degrees out but it feels like ${chalk.green(
-              feelslike,
-            )} degrees.`,
-          );
-        },
-      );
-    });
-  },
+// Define Paths
+const publicPath = path.join(__dirname, 'public');
+const viewsPath = path.join(__dirname, '/templates/views');
+const partialsPath = path.join(__dirname, '/templates/partials');
+
+// Hbs setup
+app.set('view engine', 'hbs');
+app.set('views', viewsPath);
+hbs.registerPartials(partialsPath);
+
+app.use(express.static(publicPath));
+
+app.get('/', (req, res) => {
+  res.render('index', { title: 'Weather', selectedW: true });
 });
 
-yargs.command({
-  command: 'mapbox',
-  description: 'mapbox location based wether info',
-  builder: {
-    q: {
-      describe: 'Query string, this can be city name or village name',
-      demandOption: true,
-      type: 'string',
-    },
-  },
-  handler(argv) {
+app.get('/about', (req, res) => {
+  res.render('about', { title: 'About', selectedA: true });
+});
+
+app.get('/Help', (req, res) => {
+  res.render('help', { title: 'Help', selectedH: true });
+});
+
+app.get('/api/weather/:type', (req, res) => {
+  if (req.params.type == 'mapbox' && req.query.place != '') {
     geoencode(
       'mapbox',
-      argv.q,
-      (geoError, { latitude, longitude, location } = {}) => {
+      req.query.place,
+      (
+        geoError,
+        { weather_descriptions, temperature, feelslike, imgurl, location } = {},
+      ) => {
         if (geoError) {
-          return console.log(chalk.red.inverse(geoError.message));
+          console.log(chalk.red.inverse(geoError.message));
+          return res.status(500).send({ message: geoError.message });
         }
-        weather(
-          latitude,
-          longitude,
-          (
-            weatherError,
-            { weather_descriptions, temperature, feelslike } = {},
-          ) => {
-            if (weatherError) {
-              return console.log(chalk.red.inverse(weatherError.message));
-            }
-            console.log(`Your current location is ${chalk.yellow(location)}`);
-            console.log(
-              `its ${chalk.green(weather_descriptions)} in ${chalk.yellow(
-                location,
-              )}. Its ${chalk.green(
-                temperature,
-              )} degrees out but it feels like ${chalk.green(
-                feelslike,
-              )} degrees.`,
-            );
-          },
-        );
+        res.send({
+          weather_descriptions,
+          temperature,
+          feelslike,
+          location,
+          imgurl,
+        });
       },
     );
-  },
+  } else if (req.params.type == 'ip') {
+    geoencode(
+      'ip',
+      '',
+      (
+        geoError,
+        { weather_descriptions, temperature, feelslike, imgurl, location } = {},
+      ) => {
+        if (geoError) {
+          console.log(chalk.red.inverse(geoError.message));
+          return res.status(500).send({ message: geoError.message });
+        }
+        res.send({
+          weather_descriptions,
+          temperature,
+          feelslike,
+          location,
+          imgurl,
+        });
+      },
+    );
+  } else {
+    res.send('This is the Weather Page');
+  }
 });
 
-yargs.parse();
+app.get('*', (req, res) => {
+  res.render('error', {
+    eType: '404',
+    eMessage:
+      'Page Not Found. Please select a page from any of the links given bellow.',
+  });
+});
+
+app.listen(3000, () => {
+  console.log(chalk.green.inverse('Server is Up and Running on port 3000!'));
+});

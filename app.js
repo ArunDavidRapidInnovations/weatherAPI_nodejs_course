@@ -32,6 +32,7 @@ app.get('/Help', (req, res) => {
 });
 
 app.get('/api/weather/:type', (req, res) => {
+  const reqIP = req.connection.remoteAddress.split(':')[3];
   if (req.params.type == 'mapbox' && req.query.place != '') {
     geoencode(
       'mapbox',
@@ -56,7 +57,7 @@ app.get('/api/weather/:type', (req, res) => {
   } else if (req.params.type == 'ip') {
     geoencode(
       'ip',
-      '',
+      reqIP,
       (
         geoError,
         { weather_descriptions, temperature, feelslike, imgurl, location } = {},
